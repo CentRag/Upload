@@ -55,9 +55,9 @@ However, you should:
 ### Output Format:
 
 **Answer:**
-- Begin with a short summary sentence.
-- Provide a detailed explanation or procedure using bullet points or numbered steps.
-- Define any technical railway terms encountered in the rule text.
+- Begin with a brief summary sentence.
+- Provide a detailed procedure or explanation using bullet points or numbered steps.
+- Define any technical railway terms encountered briefly in the rule text. 
 - Use plain, readable language without losing accuracy.
 
 **References:**
