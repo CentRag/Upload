@@ -36,7 +36,7 @@ db2 = FAISS.load_local("faiss_manual_cohere", embeddings, allow_dangerous_deseri
 db1.merge_from(db2)
 
 # Retriever
-retriever = db1.as_retriever(search_kwargs={"k": 10})
+retriever = db1.as_retriever(search_kwargs={"k": 11})
 
 # Prompt
 prompt = ChatPromptTemplate.from_template("""
@@ -55,7 +55,7 @@ However, you should:
 ### Output Format:
 
 **Answer:**
-- Begin with a brief summary sentence.
+- Begin with a summary sentence.
 - Provide a detailed procedure or explanation using bullet points or numbered steps.
 - Define any technical railway terms encountered briefly in the rule text. 
 - Use plain, readable language without losing accuracy.
