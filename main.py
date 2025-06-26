@@ -36,7 +36,7 @@ db2 = FAISS.load_local("faiss_manual_cohere", embeddings, allow_dangerous_deseri
 db1.merge_from(db2)
 
 # Retriever
-retriever = db1.as_retriever(search_kwargs={"k": 6})
+retriever = db1.as_retriever(search_kwargs={"k": 7})
 
 # Prompt
 prompt = ChatPromptTemplate.from_template("""
