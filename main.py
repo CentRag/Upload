@@ -36,7 +36,7 @@ db2 = FAISS.load_local("faiss_manual_cohere", embeddings, allow_dangerous_deseri
 db1.merge_from(db2)
 
 # Retriever
-retriever = db1.as_retriever(search_kwargs={"k": 8})
+retriever = db1.as_retriever(search_kwargs={"k": 6})
 
 # Prompt
 prompt = ChatPromptTemplate.from_template("""
@@ -62,7 +62,7 @@ However, you should:
 
 **References:**
 - List the exact rules, clauses, or sections used (e.g., **S.R.2.4.1**, **G.R.1.2**, **2.31**).
-- For each rule referenced, **include a brief explanation or summary of what that rule states** (based on retrieved documents).
+- For each rule referenced, **include what that rule states** (based on retrieved documents).
 - If no rule is relevant, write: **"No specific rules found based on current understanding."**
 
 **Note:**
