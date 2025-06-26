@@ -62,7 +62,8 @@ However, you should:
 
 **References:**
 - List the exact rules, clauses, or sections used (e.g., **S.R.2.4.1**, **G.R.1.2**, **2.31**).
-- If no rule is relevant, write: **"No specific rules found this based on current understanding"**
+- For each rule referenced, **include a brief explanation or summary of what that rule states** (based on retrieved documents).
+- If no rule is relevant, write: **"No specific rules found based on current understanding."**
 
 **Note:**
 If the context does not contain sufficient information to answer the question, clearly state:  
