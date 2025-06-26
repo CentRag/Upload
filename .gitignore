@@ -1,0 +1,40 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# VSCode settings
+.vscode/
+
+# Environment variables
+.env
+
+kenv/
+
+# FAISS index and pickle files (if large or generated)
+#faiss_krcl_cohere/
+#faiss_manual_cohere/
+#*.faiss
+#*.pkl
+
+# Python virtual environments
+venv/
+env/
+.venv/
+.kenv/
+
+# Docker
+*.tar
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
+
+# PyInstaller
+*.spec
+
+# Frontend node modules (if frontend is JS-based)
+frontend/node_modules/
