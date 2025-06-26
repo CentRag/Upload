@@ -20,7 +20,7 @@ st.markdown("Ask me about General & Subsidiary Rules or Accident Manual.")
 query = st.text_input("Enter your question:")
 
 # Backend URL
-BACKEND_URL = "https://upload-rn8u.onrender.com"
+BACKEND_URL = "https://upload-rn8u.onrender.com/ask"
 
 # Button
 if st.button("Ask") and query:
