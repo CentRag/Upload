@@ -2,51 +2,68 @@ import streamlit as st
 import requests
 from PIL import Image
 
-# Set page config
+# --- Page Config ---
 st.set_page_config(page_title="KRCL RuleBot", page_icon="frontend/Konkan_Railway_logo.svg.png")
 
-# Logo
+# --- Load Logo ---
 try:
     logo = Image.open("frontend/Konkan_Railway_logo.svg.png")
     st.image(logo, width=50)
 except FileNotFoundError:
     st.warning("Konkan Railway logo not found.")
 
-# Title
 st.title("KRCL RuleBot")
 st.markdown("Ask me about General & Subsidiary Rules or Accident Manual.")
 
-# User input
-query = st.text_input("Enter your question:")
+# --- Initialize session state ---
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []  # List of {"role": "user"/"assistant", "content": "..."}
 
-# Backend URL
+# --- Backend URL ---
 BACKEND_URL = "https://upload-rn8u.onrender.com/ask"
 
-# Button
+# --- Chat Display ---
+for chat in st.session_state.chat_history:
+    if chat["role"] == "user":
+        st.markdown(f"**👤 You:** {chat['content']}")
+    else:
+        st.markdown(f"**🤖 RuleBot:** {chat['content']}")
+
+# --- User Input ---
+query = st.text_input("Enter your question:", key="input_text")
+
+# --- Ask Button ---
 if st.button("Ask") and query:
+    # Append user message to chat
+    st.session_state.chat_history.append({"role": "user", "content": query})
+
     with st.spinner("Querying the backend..."):
         try:
             response = requests.post(BACKEND_URL, json={"input": query})
             if response.status_code == 200:
                 data = response.json()
-                if "error" in data:
-                    st.error(f"Backend error: {data['error']}")
-                elif "answer" in data:
-                    st.success("Answer received!")
-                    st.markdown(f"###  Answer:\n{data['answer']}")
-                    # Optional compatibility for agent-style responses
+                if "answer" in data:
+                    # Add bot response to chat history
+                    full_answer = data["answer"]
                     if data.get("action"):
-                        st.markdown(f"** Used Tool:** {data['action']}")
+                        full_answer += f"\n\n**Used Tool:** {data['action']}"
                     if data.get("observation"):
-                        st.markdown(f"** Retrieved:**\n{data['observation']}")
+                        full_answer += f"\n\n**Retrieved:**\n{data['observation']}"
+                    st.session_state.chat_history.append({"role": "assistant", "content": full_answer})
+                elif "error" in data:
+                    st.session_state.chat_history.append({"role": "assistant", "content": f"Error: {data['error']}"})
                 else:
-                    st.warning("Unexpected response format:")
-                    st.json(data)
+                    st.session_state.chat_history.append({"role": "assistant", "content": "Unexpected response format."})
             else:
-                st.error(f"Backend returned status {response.status_code}")
-                try:
-                    st.error(response.json())
-                except:
-                    st.error(response.text)
+                st.session_state.chat_history.append({
+                    "role": "assistant",
+                    "content": f"Backend returned status {response.status_code}\n{response.text}"
+                })
         except Exception as e:
-            st.error(f"Request failed: {str(e)}")
+            st.session_state.chat_history.append({
+                "role": "assistant",
+                "content": f"Request failed: {str(e)}"
+            })
+
+    # Clear input box
+    st.session_state.input_text = ""
