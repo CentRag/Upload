@@ -16,7 +16,7 @@ st.title("🚦 KRCL RuleBot")
 st.markdown("Ask me about **General & Subsidiary Rules** or **Accident Manual**.")
 
 # --- Backend Config ---
-USE_LOCAL = True
+USE_LOCAL = False
 BACKEND_URL = "http://127.0.0.1:8000/ask" if USE_LOCAL else "https://upload-rn8u.onrender.com/ask"
 
 # --- Session State Init ---
