@@ -17,10 +17,10 @@ st.markdown("Ask me about General & Subsidiary Rules or Accident Manual.")
 
 # --- Initialize session state ---
 if "chat_history" not in st.session_state:
-    st.session_state.chat_history = []  # List of {"role": "user"/"assistant", "content": "..."}
+    st.session_state.chat_history = []
 
-# --- Backend URL ---
-BACKEND_URL = "https://upload-rn8u.onrender.com/ask"
+if "input_text" not in st.session_state:
+    st.session_state.input_text = ""
 
 # --- Chat Display ---
 for chat in st.session_state.chat_history:
@@ -29,41 +29,33 @@ for chat in st.session_state.chat_history:
     else:
         st.markdown(f"**🤖 RuleBot:** {chat['content']}")
 
-# --- User Input ---
+# --- Text Input ---
 query = st.text_input("Enter your question:", key="input_text")
 
 # --- Ask Button ---
 if st.button("Ask") and query:
-    # Append user message to chat
     st.session_state.chat_history.append({"role": "user", "content": query})
 
     with st.spinner("Querying the backend..."):
         try:
-            response = requests.post(BACKEND_URL, json={"input": query})
+            response = requests.post("https://upload-rn8u.onrender.com/ask", json={"input": query})
             if response.status_code == 200:
                 data = response.json()
                 if "answer" in data:
-                    # Add bot response to chat history
-                    full_answer = data["answer"]
+                    answer = data["answer"]
                     if data.get("action"):
-                        full_answer += f"\n\n**Used Tool:** {data['action']}"
+                        answer += f"\n\n**Used Tool:** {data['action']}"
                     if data.get("observation"):
-                        full_answer += f"\n\n**Retrieved:**\n{data['observation']}"
-                    st.session_state.chat_history.append({"role": "assistant", "content": full_answer})
+                        answer += f"\n\n**Retrieved:**\n{data['observation']}"
+                    st.session_state.chat_history.append({"role": "assistant", "content": answer})
                 elif "error" in data:
                     st.session_state.chat_history.append({"role": "assistant", "content": f"Error: {data['error']}"})
                 else:
                     st.session_state.chat_history.append({"role": "assistant", "content": "Unexpected response format."})
             else:
-                st.session_state.chat_history.append({
-                    "role": "assistant",
-                    "content": f"Backend returned status {response.status_code}\n{response.text}"
-                })
+                st.session_state.chat_history.append({"role": "assistant", "content": f"Backend returned status {response.status_code}: {response.text}"})
         except Exception as e:
-            st.session_state.chat_history.append({
-                "role": "assistant",
-                "content": f"Request failed: {str(e)}"
-            })
+            st.session_state.chat_history.append({"role": "assistant", "content": f"Request failed: {str(e)}"})
 
-    # Clear input box
+    # ✅ Clear input after response
     st.session_state.input_text = ""
