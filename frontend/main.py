@@ -36,7 +36,7 @@ except FileNotFoundError:
     st.warning("Konkan Railway logo not found.")
 
 # --- Title ---
-st.title("🚦 KRCL RuleBot")
+st.title("KRCL RuleBot")
 st.markdown("Ask about **General & Subsidiary Rules** or **Accident Manual**.")
 
 # --- Session State Initialization ---
