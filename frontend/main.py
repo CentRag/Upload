@@ -5,6 +5,19 @@ from PIL import Image
 # --- App Config ---
 st.set_page_config(page_title="KRCL RuleBot", page_icon="frontend/Konkan_Railway_logo.svg.png")
 
+# --- Sidebar: Backend Selector ---
+st.sidebar.title("⚙️ Settings")
+backend_choice = st.sidebar.radio(
+    "Choose backend mode:",
+    ("Internet (Render)", "Localhost"),
+    index=0
+)
+
+# Set backend URL based on user selection
+BACKEND_URL = (
+    "https://upload-rn8u.onrender.com/ask" if backend_choice == "Internet (Render)" else "http://127.0.0.1:8000/ask"
+)
+
 # --- Logo ---
 try:
     logo = Image.open("frontend/Konkan_Railway_logo.svg.png")
@@ -15,21 +28,17 @@ except FileNotFoundError:
 st.title("🚦 KRCL RuleBot")
 st.markdown("Ask me about **General & Subsidiary Rules** or **Accident Manual**.")
 
-# --- Backend Config ---
-USE_LOCAL = False
-BACKEND_URL = "http://127.0.0.1:8000/ask" if USE_LOCAL else "https://upload-rn8u.onrender.com/ask"
-
 # --- Session State Init ---
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 if "pending_clear" not in st.session_state:
     st.session_state.pending_clear = False
 
-# --- If previous run marked input to be cleared, do it before rendering widget ---
+# --- Input clearing logic ---
 if st.session_state.pending_clear:
     st.session_state.input_text = ""
     st.session_state.pending_clear = False
-    st.rerun()  # Safe rerun after clearing
+    st.rerun()
 
 # --- Text Input ---
 query = st.text_input("Enter your question:", key="input_text")
@@ -72,7 +81,6 @@ if st.button("Ask") and query:
                 "content": f"Request failed: {str(e)}"
             })
 
-    # ✅ Mark input to be cleared and rerun
     st.session_state.pending_clear = True
     st.rerun()
 
