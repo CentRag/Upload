@@ -98,7 +98,7 @@ for chat in reversed(st.session_state.chat_history):
     if chat["role"] == "user":
         st.markdown(f"**👤 You:** {chat['content']}")
     else:
-        st.markdown(f"**🤖 RuleBot:** {chat['content']}")
+        st.markdown(f"** RuleBot:** {chat['content']}")
     st.markdown("---")
 
 
