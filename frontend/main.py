@@ -2,10 +2,10 @@ import streamlit as st
 import requests
 from PIL import Image
 
-# --- App Configuration ---
+# --- App Config ---
 st.set_page_config(page_title="KRCL RuleBot", page_icon="frontend/Konkan_Railway_logo.svg.png")
 
-# --- Load Logo ---
+# --- Logo ---
 try:
     logo = Image.open("frontend/Konkan_Railway_logo.svg.png")
     st.image(logo, width=50)
@@ -16,34 +16,36 @@ st.title("🚦 KRCL RuleBot")
 st.markdown("Ask me about **General & Subsidiary Rules** or **Accident Manual**.")
 
 # --- Backend Config ---
-USE_LOCAL = True  # 🔁 Toggle this to True for local testing
+USE_LOCAL = True
+BACKEND_URL = "http://127.0.0.1:8000/ask" if USE_LOCAL else "https://upload-rn8u.onrender.com/ask"
 
-BACKEND_URL = (
-    "http://127.0.0.1:8000/ask" if USE_LOCAL else "https://upload-rn8u.onrender.com/ask"
-)
-
-# --- Session State Initialization ---
+# --- Session State Init ---
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
+if "pending_clear" not in st.session_state:
+    st.session_state.pending_clear = False
 
-if "input_text" not in st.session_state:
+# --- If previous run marked input to be cleared, do it before rendering widget ---
+if st.session_state.pending_clear:
     st.session_state.input_text = ""
+    st.session_state.pending_clear = False
+    st.rerun()  # Safe rerun after clearing
 
-# --- Chat Display ---
+# --- Text Input ---
+query = st.text_input("Enter your question:", key="input_text")
+
+# --- Show Chat History ---
 for chat in st.session_state.chat_history:
     if chat["role"] == "user":
         st.markdown(f"**👤 You:** {chat['content']}")
     else:
         st.markdown(f"**🤖 RuleBot:** {chat['content']}")
 
-# --- Text Input ---
-query = st.text_input("Enter your question:", key="input_text")
-
 # --- Ask Button ---
 if st.button("Ask") and query:
     st.session_state.chat_history.append({"role": "user", "content": query})
 
-    with st.spinner("Querying the backend..."):
+    with st.spinner("Querying backend..."):
         try:
             response = requests.post(BACKEND_URL, json={"input": query})
             if response.status_code == 200:
@@ -70,5 +72,7 @@ if st.button("Ask") and query:
                 "content": f"Request failed: {str(e)}"
             })
 
-    # --- Clear input box after submission ---
-    st.session_state.input_text = ""
+    # ✅ Mark input to be cleared and rerun
+    st.session_state.pending_clear = True
+    st.rerun()
+
