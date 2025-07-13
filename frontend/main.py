@@ -24,7 +24,7 @@ backend_choice = st.sidebar.radio(
 # Select backend URL
 # Select backend URL
 BACKEND_URL = (
-    "https://upload-ai00.onrender.com/ask"
+    "https://upload-jzee.onrender.com/ask"
     if backend_choice == "Internet (Render)"
     else "http://127.0.0.1:8000/ask"
 )
