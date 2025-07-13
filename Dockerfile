@@ -18,17 +18,19 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first to cache dependencies
+# Copy requirements first to leverage Docker cache
 COPY requirements.txt .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the app
+# Copy all source code and FAISS directories explicitly
 COPY . .
+COPY faiss_krcl_cohere ./faiss_krcl_cohere
+COPY faiss_manual_cohere ./faiss_manual_cohere
 
-# Expose port
+# Expose the app port (used by uvicorn)
 EXPOSE 8000
 
-# Run the server
+# Run the FastAPI app
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
