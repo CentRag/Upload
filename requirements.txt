@@ -1,18 +1,15 @@
-# Backend
 fastapi
 uvicorn[standard]
 pydantic>=2,<3
 python-dotenv
 starlette
 diskcache
-
-# Vector search
 faiss-cpu
 
-# LangChain ecosystem (0.3.x compatible)
-langchain==0.3.0
+langchain==0.3.26
 langchain-core==0.3.68
-langchain-community==0.3.0
+langchain-community==0.3.26
+langchain-text-splitters==0.3.8
 langchain-groq==0.3.4
 langchain-cohere==0.3.0
 cohere==4.14.0
