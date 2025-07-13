@@ -22,11 +22,13 @@ backend_choice = st.sidebar.radio(
 )
 
 # Select backend URL
+# Select backend URL
 BACKEND_URL = (
-    "https://upload-rn8u.onrender.com/ask"
+    "https://upload-ai00.onrender.com/ask"
     if backend_choice == "Internet (Render)"
     else "http://127.0.0.1:8000/ask"
 )
+
 
 # --- Logo ---
 try:
