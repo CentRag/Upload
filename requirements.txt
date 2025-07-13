@@ -7,6 +7,6 @@ langchain-community
 langchain-groq==0.3.4
 faiss-cpu
 starlette
-cohere
+cohere==4.14.0
 langchain-cohere
 diskcache
