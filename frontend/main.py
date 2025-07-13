@@ -30,6 +30,7 @@ BACKEND_URL = (
 )
 
 
+
 # --- Logo ---
 try:
     logo = Image.open("frontend/Konkan_Railway_logo.svg.png")
