@@ -17,11 +17,11 @@ def extract_text_from_pdf(path):
         for page in pdf.pages:
             final_text = ""
 
-            # 1️⃣ Extract digital text (clean layer text)
+            # Extract digital text (clean layer text)
             digital_text = page.extract_text() or ""
             final_text += digital_text.strip()
 
-            # 2️⃣ Find image regions on the page
+            #  Find image regions on the page
             image_regions = page.images  # list of image objects
 
             ocr_texts = []
@@ -44,7 +44,7 @@ def extract_text_from_pdf(path):
                 if ocr_result.strip():
                     ocr_texts.append(ocr_result.strip())
 
-            # 3️⃣ Append OCR results (only image text)
+            # Append OCR results (only image text)
             if ocr_texts:
                 final_text += "\n" + "\n".join(ocr_texts)
 
