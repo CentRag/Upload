@@ -17,25 +17,40 @@ def extract_text_from_pdf(path):
         for page in pdf.pages:
             final_text = ""
 
-            # 1. Extract digital text (if any)
+            # 1️⃣ Extract digital text (clean layer text)
             digital_text = page.extract_text() or ""
-            
-            # 2. OCR the page image (always do this)
-            pil_img = page.to_image(resolution=300).original
-            ocr_text = pytesseract.image_to_string(pil_img)
+            final_text += digital_text.strip()
 
-            # 3. Combine both intelligently
-            # Avoid duplicates: OCR includes digital text too
-            if digital_text.strip():
-                final_text += digital_text.strip() + "\n"
+            # 2️⃣ Find image regions on the page
+            image_regions = page.images  # list of image objects
 
-            # Add OCR text only if it's not repeating the same content
-            if ocr_text.strip() not in final_text:
-                final_text += ocr_text.strip()
+            ocr_texts = []
+
+            for img in image_regions:
+                # Extract bounding box of the image region
+                x0 = img["x0"]
+                y0 = img["y0"]
+                x1 = img["x1"]
+                y1 = img["y1"]
+
+                # Crop that specific region
+                cropped = page.crop((x0, y0, x1, y1)).to_image(resolution=300)
+                pil_img = cropped.original
+
+                # OCR ONLY this region
+                ocr_result = pytesseract.image_to_string(pil_img)
+
+                # Collect only meaningful OCR text
+                if ocr_result.strip():
+                    ocr_texts.append(ocr_result.strip())
+
+            # 3️⃣ Append OCR results (only image text)
+            if ocr_texts:
+                final_text += "\n" + "\n".join(ocr_texts)
 
             text_output.append(final_text)
 
-    return "\n".join(text_output)
+    return "\n\n".join(text_output)
 
 
 def clean_text(text):
