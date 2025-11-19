@@ -15,17 +15,28 @@ def extract_text_from_pdf(path):
 
     with pdfplumber.open(path) as pdf:
         for page in pdf.pages:
-            text = page.extract_text()
+            final_text = ""
 
-            if text and text.strip():
-                text_output.append(text)
-            else:
-                # OCR fallback
-                pil_img = page.to_image(resolution=300).original
-                ocr_text = pytesseract.image_to_string(pil_img)
-                text_output.append(ocr_text)
+            # 1. Extract digital text (if any)
+            digital_text = page.extract_text() or ""
+            
+            # 2. OCR the page image (always do this)
+            pil_img = page.to_image(resolution=300).original
+            ocr_text = pytesseract.image_to_string(pil_img)
+
+            # 3. Combine both intelligently
+            # Avoid duplicates: OCR includes digital text too
+            if digital_text.strip():
+                final_text += digital_text.strip() + "\n"
+
+            # Add OCR text only if it's not repeating the same content
+            if ocr_text.strip() not in final_text:
+                final_text += ocr_text.strip()
+
+            text_output.append(final_text)
 
     return "\n".join(text_output)
+
 
 def clean_text(text):
     return " ".join(text.split())
